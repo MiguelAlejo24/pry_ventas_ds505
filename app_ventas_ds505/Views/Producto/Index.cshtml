@@ -1,0 +1,64 @@
+﻿@model IEnumerable<pry_ventas_ds505.Models.Producto>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1><i class="fas fa-box"></i> Listado de Productos</h1>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <a class="btn btn-success" asp-controller="Producto" asp-action="Create">
+                <i class="fas fa-plus"></i> Agregar Producto
+            </a>
+        </div>
+    </div>
+
+    <br />
+
+    <div class="row">
+        @if (Model.Count() > 0)
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.codigo_producto)</th>
+                        <th>@Html.DisplayNameFor(model => model.producto)</th>
+                        <th>@Html.DisplayNameFor(model => model.stock_disponible)</th>
+                        <th>@Html.DisplayNameFor(model => model.costo)</th>
+                        <th>@Html.DisplayNameFor(model => model.ganancia)</th>
+                        <th>@Html.DisplayNameFor(model => model.producto_codigo_marca)</th>
+                        <th>@Html.DisplayNameFor(model => model.producto_codigo_categoria)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.codigo_producto</td>
+                            <td>@item.producto</td>
+                            <td>@item.stock_disponible</td>
+                            <td>@item.costo</td>
+                            <td>@item.ganancia</td>
+                            <td>@item.producto_codigo_marca</td>
+                            <td>@item.producto_codigo_categoria</td>
+                            <td>
+                                <a asp-controller="Producto" asp-action="Edit" asp-route-id="@item.codigo_producto" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                                <a asp-controller="Producto" asp-action="Delete" asp-route-id="@item.codigo_producto" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash-alt"></i> Borrar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No existen registros</p>
+        }
+    </div class="text-lg-center">
+    <h2>Desarrollado por Miguel Alejo</h2>
+    </div>
+</div>
