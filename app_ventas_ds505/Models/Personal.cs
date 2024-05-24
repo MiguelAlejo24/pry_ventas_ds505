@@ -7,9 +7,9 @@ namespace pry_ventas_ds505.Models
     public class Personal
     {
         [Key]
-        [Required(ErrorMessage = "Escriba número de DNI")]
+        [Required(ErrorMessage = "Escriba numero de DNI")]
         [MinLength(8, ErrorMessage = "Escriba 8 digitos")]
-        [Display(Name = "Número DNI")]
+        [Display(Name = "Numero DNI")]
         public String dni { get; set; }
 
         [Required(ErrorMessage = "Escriba apellido paterno")]
@@ -20,18 +20,18 @@ namespace pry_ventas_ds505.Models
         [Required(ErrorMessage = "Escriba apellido materno")]
         [StringLength(25)]
         [Display(Name = "Apellido Materno")]
-        public String ap_materno { get; set;}
+        public String ap_materno { get; set; }
 
         [Required(ErrorMessage = "Escriba nombre")]
         [StringLength(25)]
         [Display(Name = "Nombre")]
         public String nombre { get; set; }
 
-        [Display(Name = "Género")]
+        [Display(Name = "Genero")]
         public String genero { get; set; }
 
-        [Required(ErrorMessage = "Escriba fecha de nacimiento")]
-        [Display(Name = "Fecha De Nacimiento")]
+        [Required(ErrorMessage = "Elija fecha de nacimiento")]
+        [Display(Name = "Fecha de Nacimiento")]
         [DataType(DataType.Date)]
         public DateTime fecha_nacimiento { get; set; }
 
