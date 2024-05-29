@@ -5,7 +5,7 @@ namespace pry_ventas_ds505.Data
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
-        public DbSet<Personal> Personal { get; set; }
+        public DbSet<ServiciosAdicionales> ServiciosAdicionales { get; set; }
         public DbSet<Producto> Producto { get; set; }
     
 }

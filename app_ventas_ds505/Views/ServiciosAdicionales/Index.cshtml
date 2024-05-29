@@ -1,0 +1,205 @@
+﻿@model IEnumerable<pry_ventas_ds505.Models.ServiciosAdicionales>
+
+@{
+    ViewData["Title"] = "Servicios Adicionales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section EstiloDT {
+    <link rel="stylesheet" href="~/lib/datatables.net/css/jquery.dataTables.min.css" />
+}
+
+<h1><i class="fas fa-concierge-bell"></i> Servicios Adicionales</h1>
+<hr />
+
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="Formulario" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <form>
+                                <div class="form-group">
+                                    <label asp-for="@Model.First().id_servicio" class="control-label"></label>
+                                    <input asp-for="@Model.First().id_servicio" class="form-control" />
+                                    <span asp-validation-for="@Model.First().id_servicio" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="@Model.First().nombre" class="control-label"></label>
+                                    <input asp-for="@Model.First().nombre" class="form-control" />
+                                    <span asp-validation-for="@Model.First().nombre" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="@Model.First().descripcion" class="control-label"></label>
+                                    <textarea asp-for="@Model.First().descripcion" class="form-control"></textarea>
+                                    <span asp-validation-for="@Model.First().descripcion" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="@Model.First().precio" class="control-label"></label>
+                                    <input asp-for="@Model.First().precio" class="form-control" />
+                                    <span asp-validation-for="@Model.First().precio" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="@Model.First().id_reservacion" class="control-label"></label>
+                                    <input asp-for="@Model.First().id_reservacion" class="form-control" />
+                                    <span asp-validation-for="@Model.First().id_reservacion" class="text-danger"></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btn_cerrar" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-window-close"></i> Cerrar
+                    </button>
+                    <button type="button" id="btn_grabar" class="btn btn-outline-primary"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+
+    <div class="row">
+        <div class="row mt-3">
+            <table id="tb_servicios" class="table table-striped display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.id_servicio)</th>
+                        <th>@Html.DisplayNameFor(model => model.nombre)</th>
+                        <th>@Html.DisplayNameFor(model => model.descripcion)</th>
+                        <th>@Html.DisplayNameFor(model => model.precio)</th>
+                        <th>@Html.DisplayNameFor(model => model.id_reservacion)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <p>No Existen Registros</p>
+        </div>
+        @section Scripts {
+            <script src="~/lib/datatables.net/js/jquery.dataTables.js"></script>
+            <script src="~/lib/datatables.net/js/dataTables.buttons.min.js"></script>
+
+            <script>
+                $(document).ready(function () {
+                    $('#tb_servicios').DataTable({
+                        "ajax": {
+                            "url": "@Url.Action("Listar", "Personal")",
+                            "type": "GET",
+                            "dataType": "json"
+                        },
+                        "columns": [
+                            { "data": "idServicio" },
+                            { "data": "nombre" },
+                            { "data": "descripcion" },
+                            { "data": "precio" },
+                            { "data": "idReservacion" },
+                            {
+                                "data": "idServicio", "render": function (data) {
+                                    return "<button class='btn btn-outline-success' type='button' onclick='AbrirRegistro(" + data + ")'><i class='far fa-edit'></i></button>" +
+                                        "<button class='btn btn-outline-danger' type='button' onclick='Eliminar(" + data + ")'><i class='fas fa-trash-alt'></i></button>";
+                                }
+                            }
+                        ],
+                        "order": [[1, "asc"]],
+                        dom: "Bfrtip",
+                        buttons: [
+                            {
+                                text: "Registrar Servicio Adicional",
+                                attr: { class: "btn btn-outline-primary" },
+                                action: function () {
+                                    AbrirRegistro("");
+                                }
+                            }
+                        ]
+                    });
+                });
+
+                function AbrirRegistro($idServicio) {
+                    if ($idServicio != "") {
+                        jQuery.ajax({
+                            url: "@Url.Action("Consultar", "Personal")" + "?id=" + $idServicio,
+                            type: "GET",
+                            dataType: "json",
+                            contextType: "application/json; charset=utf-8",
+                            success: function (data) {
+                                if (data != null) {
+                                    $("#IdServicio").val(data.idServicio);
+                                    $("#Nombre").val(data.nombre);
+                                    $("#Descripcion").val(data.descripcion);
+                                    $("#Precio").val(data.precio);
+                                    $("#IdReservacion").val(data.idReservacion);
+                                }
+                            }
+                        });
+                        $(".modal-title").text("Editar Servicio Adicional");
+                        $("#btn_grabar").html("<i class='fas fa-save'></i> Guardar Cambios");
+                    } else {
+                        $("#IdServicio").val("");
+                        $("#Nombre").val("");
+                        $("#Descripcion").val("");
+                        $("#Precio").val("");
+                        $("#IdReservacion").val("");
+
+                        $(".modal-title").text("Registrar Servicio Adicional");
+                        $("#btn_grabar").html("<i class='fas fa-save'></i> Guardar Datos");
+                    }
+                    $("#Formulario").modal("show");
+                };
+
+                $("#btn_grabar").click(function (e) {
+                    let $servicio = {
+                        "idServicio": $("#IdServicio").val(),
+                        "nombre": $("#Nombre").val(),
+                        "descripcion": $("#Descripcion").val(),
+                        "precio": $("#Precio").val(),
+                        "idReservacion": $("#IdReservacion").val()
+                    };
+
+                    jQuery.ajax({
+                        url: "@Url.Action("Grabar", "Personal")",
+                        type: "POST",
+                        data: JSON.stringify($servicio),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data.resultado) {
+                                $("#tb_servicios").DataTable().ajax.reload();
+                                $("#Formulario").modal("hide");
+                            } else {
+                                alert("No fue posible grabar la información");
+                            }
+                        },
+                        error: function (error) {
+                            alert(error);
+                        }
+                    });
+                });
+
+                function Eliminar($idServicio) {
+                    if (confirm("¿Seguro de eliminar?")) {
+                        jQuery.ajax({
+                            url: "@Url.Action("Borrar", "Personal")" + "?id=" + $idServicio,
+                            type: "GET",
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (data) {
+                                if (data.resultado) {
+                                    $("#tb_servicios").DataTable().ajax.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+
+            </script>
+
+        }
+    </div>
