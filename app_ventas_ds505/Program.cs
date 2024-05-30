@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("bd_ventas_ds505")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("SunsetRetreat_db")));
 
 
 // Add services to the container.

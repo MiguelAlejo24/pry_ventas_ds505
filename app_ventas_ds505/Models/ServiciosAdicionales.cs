@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace pry_ventas_ds505.Models
 {
@@ -7,23 +7,25 @@ namespace pry_ventas_ds505.Models
     public class ServiciosAdicionales
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Required(ErrorMessage = "Escriba número de ID")]
+        [Display(Name = "Id del Servicio")]
         public int id_servicio { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Escriba el Nombre")]
         [StringLength(50)]
+        [Display(Name = "Nombre")]
         public string nombre { get; set; }
 
         public string descripcion { get; set; }
 
-        [Required]
-        [Column(TypeName = "decimal(10,2)")]
+        [Required(ErrorMessage = "Escriba el Precio")]
         public decimal precio { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Escriba el ID de Reservación")]
+        [Display(Name = "ID de Reservación")]
         public int id_reservacion { get; set; }
 
-        [ForeignKey("id_reservacion")]
-        public virtual Reservaciones Reservacion { get; set; }
+        //[ForeignKey("id_reservacion")]
+        //public virtual reservacion reservacion { get; set; }
     }
 }

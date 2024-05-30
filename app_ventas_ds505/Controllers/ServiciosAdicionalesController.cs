@@ -23,7 +23,7 @@ namespace pry_ventas_ds505.Controllers
         [HttpGet]
         public JsonResult Listar()
         {
-            string cad_sql = "exec sp_listar_servicios_adicionales";
+            string cad_sql = "EXEC sp_listar_servicios_adicionales";
             List<ServiciosAdicionales> arr_servicios = _context.ServiciosAdicionales.FromSqlRaw(cad_sql).ToList();
             return Json(new { data = arr_servicios });
         }
@@ -32,10 +32,7 @@ namespace pry_ventas_ds505.Controllers
         public JsonResult Consultar(int id_servicio)
         {
             string cad_sql = "EXEC sp_consultar_servicio_adicional @id_servicio";
-            ServiciosAdicionales servicio = _context.ServiciosAdicionales
-                .FromSqlRaw(cad_sql, new SqlParameter("@id_servicio", id_servicio))
-                .AsEnumerable()
-                .FirstOrDefault();
+            ServiciosAdicionales servicio = _context.ServiciosAdicionales.FromSqlRaw(cad_sql, new SqlParameter("@id_servicio", id_servicio)).AsEnumerable().FirstOrDefault();
             return Json(servicio);
         }
 
@@ -45,15 +42,10 @@ namespace pry_ventas_ds505.Controllers
             bool rpta = true;
             try
             {
-                ServiciosAdicionales tmp_servicio = null;
-                tmp_servicio = (from ser in _context.ServiciosAdicionales
-                                where ser.id_servicio == servicio.id_servicio
-                                select ser).FirstOrDefault();
-
+                ServiciosAdicionales tmp_servicio = _context.ServiciosAdicionales.FirstOrDefault(serv => serv.id_servicio == servicio.id_servicio);
                 if (tmp_servicio == null)
                 {
                     _context.ServiciosAdicionales.Add(servicio);
-                    _context.SaveChanges();
                 }
                 else
                 {
@@ -61,27 +53,23 @@ namespace pry_ventas_ds505.Controllers
                     tmp_servicio.descripcion = servicio.descripcion;
                     tmp_servicio.precio = servicio.precio;
                     tmp_servicio.id_reservacion = servicio.id_reservacion;
-                    _context.SaveChanges();
                 }
+                _context.SaveChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 rpta = false;
             }
-
             return Json(new { resultado = rpta });
         }
 
+        [HttpDelete]
         public JsonResult Borrar(int id_servicio)
         {
             bool rpta = true;
             try
             {
-                ServiciosAdicionales servicio = new ServiciosAdicionales();
-                servicio = (from ser in _context.ServiciosAdicionales
-                            where ser.id_servicio == id_servicio
-                            select ser).FirstOrDefault();
-
+                ServiciosAdicionales servicio = _context.ServiciosAdicionales.FirstOrDefault(serv => serv.id_servicio == id_servicio);
                 if (servicio != null)
                 {
                     _context.ServiciosAdicionales.Remove(servicio);
@@ -92,11 +80,10 @@ namespace pry_ventas_ds505.Controllers
                     rpta = false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 rpta = false;
             }
-
             return Json(new { resultado = rpta });
         }
     }

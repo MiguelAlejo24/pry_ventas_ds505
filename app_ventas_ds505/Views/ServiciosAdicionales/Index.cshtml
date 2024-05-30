@@ -1,14 +1,15 @@
 ﻿@model pry_ventas_ds505.Models.ServiciosAdicionales
 
 @{
-    ViewData["Title"] = "Servicios Adicionales";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 @section EstiloDT {
     <link rel="stylesheet" href="~/lib/datatables.net/css/jquery.dataTables.min.css" />
 }
 
-<h1><i class="fas fa-concierge-bell"></i> Servicios Adicionales</h1>
+<h1><i class="fas fa-plus-circle"></i> Listado de Servicios Adicionales</h1>
 <hr />
 
 <div class="container">
@@ -25,29 +26,29 @@
                         <div class="col-sm-12">
                             <form>
                                 <div class="form-group">
-                                    <label asp-for="@Model.id_servicio" class="control-label">@Html.DisplayNameFor(model => model.id_servicio)</label>
-                                    <input asp-for="@Model.id_servicio" class="form-control" readonly />
-                                    <span asp-validation-for="@Model.id_servicio" class="text-danger"></span>
+                                    <label asp-for="id_servicio" class="control-label"></label>
+                                    <input asp-for="id_servicio" class="form-control" type="number" />
+                                    <span asp-validation-for="id_servicio" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@Model.nombre" class="control-label">@Html.DisplayNameFor(model => model.nombre)</label>
-                                    <input asp-for="@Model.nombre" class="form-control" maxlength="50" required />
-                                    <span asp-validation-for="@Model.nombre" class="text-danger"></span>
+                                    <label asp-for="nombre" class="control-label"></label>
+                                    <input asp-for="nombre" class="form-control" />
+                                    <span asp-validation-for="nombre" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@Model.descripcion" class="control-label">@Html.DisplayNameFor(model => model.descripcion)</label>
-                                    <textarea asp-for="@Model.descripcion" class="form-control"></textarea>
-                                    <span asp-validation-for="@Model.descripcion" class="text-danger"></span>
+                                    <label asp-for="descripcion" class="control-label"></label>
+                                    <textarea asp-for="descripcion" class="form-control"></textarea>
+                                    <span asp-validation-for="descripcion" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@Model.precio" class="control-label">@Html.DisplayNameFor(model => model.precio)</label>
-                                    <input asp-for="@Model.precio" class="form-control" type="number" step="0.01" min="0" required />
-                                    <span asp-validation-for="@Model.precio" class="text-danger"></span>
+                                    <label asp-for="precio" class="control-label"></label>
+                                    <input asp-for="precio" class="form-control" />
+                                    <span asp-validation-for="precio" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@Model.id_reservacion" class="control-label">@Html.DisplayNameFor(model => model.id_reservacion)</label>
-                                    <input asp-for="@Model.id_reservacion" class="form-control" type="number" min="1" required />
-                                    <span asp-validation-for="@Model.id_reservacion" class="text-danger"></span>
+                                    <label asp-for="id_reservacion" class="control-label"></label>
+                                    <input asp-for="id_reservacion" class="form-control" />
+                                    <span asp-validation-for="id_reservacion" class="text-danger"></span>
                                 </div>
                             </form>
                         </div>
@@ -70,11 +71,11 @@
             <table id="tb_servicios" class="table table-striped display" style="width:100%">
                 <thead>
                     <tr>
-                        <th>@Html.DisplayNameFor(model => model.id_servicio)</th>
-                        <th>@Html.DisplayNameFor(model => model.nombre)</th>
-                        <th>@Html.DisplayNameFor(model => model.descripcion)</th>
-                        <th>@Html.DisplayNameFor(model => model.precio)</th>
-                        <th>@Html.DisplayNameFor(model => model.id_reservacion)</th>
+                        <th>@Html.DisplayNameFor(serv => serv.id_servicio)</th>
+                        <th>@Html.DisplayNameFor(serv => serv.nombre)</th>
+                        <th>@Html.DisplayNameFor(serv => serv.descripcion)</th>
+                        <th>@Html.DisplayNameFor(serv => serv.precio)</th>
+                        <th>@Html.DisplayNameFor(serv => serv.id_reservacion)</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -82,6 +83,9 @@
                 </tbody>
             </table>
             <p>No Existen Registros</p>
+            <div class="text-lg-center">
+                <h2>Elaborado por Aldair Villegas</h2>
+            </div>
         </div>
         @section Scripts {
             <script src="~/lib/datatables.net/js/jquery.dataTables.js"></script>
@@ -91,18 +95,18 @@
                 $(document).ready(function () {
                     $('#tb_servicios').DataTable({
                         "ajax": {
-                            "url": "@Url.Action("Listar", "Personal")",
+                            "url": "@Url.Action("Listar", "ServiciosAdicionales")",
                             "type": "GET",
                             "dataType": "json"
                         },
                         "columns": [
-                            { "data": "idServicio" },
+                            { "data": "id_servicio" },
                             { "data": "nombre" },
                             { "data": "descripcion" },
                             { "data": "precio" },
-                            { "data": "idReservacion" },
+                            { "data": "id_reservacion" },
                             {
-                                "data": "idServicio", "render": function (data) {
+                                "data": "id_servicio", "render": function (data) {
                                     return "<button class='btn btn-outline-success' type='button' onclick='AbrirRegistro(" + data + ")'><i class='far fa-edit'></i></button>" +
                                         "<button class='btn btn-outline-danger' type='button' onclick='Eliminar(" + data + ")'><i class='fas fa-trash-alt'></i></button>";
                                 }
@@ -122,49 +126,52 @@
                     });
                 });
 
-                function AbrirRegistro($idServicio) {
-                    if ($idServicio != "") {
-                        jQuery.ajax({
-                            url: "@Url.Action("Consultar", "Personal")" + "?id=" + $idServicio,
+                function AbrirRegistro(id_servicio) {
+                    if (id_servicio != "") {
+                        $.ajax({
+                            url: "@Url.Action("Consultar", "ServiciosAdicionales")" + "?id_servicio=" + id_servicio,
                             type: "GET",
                             dataType: "json",
-                            contextType: "application/json; charset=utf-8",
                             success: function (data) {
                                 if (data != null) {
-                                    $("#IdServicio").val(data.idServicio);
-                                    $("#Nombre").val(data.nombre);
-                                    $("#Descripcion").val(data.descripcion);
-                                    $("#Precio").val(data.precio);
-                                    $("#IdReservacion").val(data.idReservacion);
+                                    $("#id_servicio").val(data.id_servicio).attr("readonly", true);
+                                    $("#nombre").val(data.nombre);
+                                    $("#descripcion").val(data.descripcion);
+                                    $("#precio").val(data.precio);
+                                    $("#id_reservacion").val(data.id_reservacion);
                                 }
+                            },
+                            error: function (error) {
+                                console.log("Error al consultar servicio adicional:", error);
                             }
                         });
                         $(".modal-title").text("Editar Servicio Adicional");
                         $("#btn_grabar").html("<i class='fas fa-save'></i> Guardar Cambios");
                     } else {
-                        $("#IdServicio").val("");
-                        $("#Nombre").val("");
-                        $("#Descripcion").val("");
-                        $("#Precio").val("");
-                        $("#IdReservacion").val("");
+                        $("#id_servicio").attr("readonly", false);
+
+                        $("#id_servicio").val("");
+                        $("#nombre").val("");
+                        $("#descripcion").val("");
+                        $("#precio").val("");
+                        $("#id_reservacion").val("");
 
                         $(".modal-title").text("Registrar Servicio Adicional");
                         $("#btn_grabar").html("<i class='fas fa-save'></i> Guardar Datos");
                     }
                     $("#Formulario").modal("show");
                 };
-
                 $("#btn_grabar").click(function (e) {
                     let $servicio = {
-                        "idServicio": $("#IdServicio").val(),
-                        "nombre": $("#Nombre").val(),
-                        "descripcion": $("#Descripcion").val(),
-                        "precio": $("#Precio").val(),
-                        "idReservacion": $("#IdReservacion").val()
+                        "id_servicio": $("#id_servicio").val(),
+                        "nombre": $("#nombre").val(),
+                        "descripcion": $("#descripcion").val(),
+                        "precio": $("#precio").val(),
+                        "id_reservacion": $("#id_reservacion").val()
                     };
 
                     jQuery.ajax({
-                        url: "@Url.Action("Grabar", "Personal")",
+                        url: "@Url.Action("Grabar", "ServiciosAdicionales")",
                         type: "POST",
                         data: JSON.stringify($servicio),
                         dataType: "json",
@@ -178,28 +185,32 @@
                             }
                         },
                         error: function (error) {
-                            alert(error);
+                            alert("Error al grabar la información");
                         }
                     });
                 });
 
-                function Eliminar($idServicio) {
+                function Eliminar(id_servicio) {
                     if (confirm("¿Seguro de eliminar?")) {
                         jQuery.ajax({
-                            url: "@Url.Action("Borrar", "Personal")" + "?id=" + $idServicio,
-                            type: "GET",
-                            dataType: "json",
-                            contentType: "application/json; charset=utf-8",
-                            success: function (data) {
-                                if (data.resultado) {
-                                    $("#tb_servicios").DataTable().ajax.reload();
-                                }
+                            url: "@Url.Action("Borrar", "ServiciosAdicionales")" + "?id_servicio=" + id_servicio,
+                        type: "DELETE",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data.resultado) {
+                                $("#tb_servicios").DataTable().ajax.reload();
+                            } else {
+                                alert("No se pudo eliminar el servicio adicional");
+                            }
+                        },
+                        error: function (error) {
+                            alert("Error al eliminar el servicio adicional");
                             }
                         });
                     }
                 }
-
             </script>
-
         }
     </div>
+</div>
